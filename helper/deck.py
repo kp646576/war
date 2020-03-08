@@ -14,6 +14,9 @@ class Deck:
                 self.cards.append( Card(suit, value) )
         return self
 
+    def size(self):
+        return len(self.cards)
+
     # Fisher–Yates Shuffle Algorithm
     # https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
     def shuffle(self):

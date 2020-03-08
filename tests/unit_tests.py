@@ -7,30 +7,12 @@ from helper.suit import Suit
 from helper.value import Value
 from helper.card import Card
 from helper.deck import Deck
+from helper.player import Player
 
 
 class Tests(unittest.TestCase):
-
-    # Deck Tests
-    def test_d_shuffle(self):
-        pre_shuffle = []
-        count = 0
-
-        deck = Deck().build()
-
-        for c in deck.cards:
-            pre_shuffle.append(c)
-
-        deck.shuffle()
-
-        for i, c in enumerate(deck.cards):
-            if c.value == pre_shuffle[i].value and c.suit == pre_shuffle[i].suit:
-                count += 1
-
-        self.assertLess(count, len(deck.cards))
-
-    def test_d_build(self):
-        cards = [
+    def setUp(self):
+        self.full_cards = [
             Card(Suit.DIAMONDS, Value.TWO),
             Card(Suit.DIAMONDS, Value.THREE),
             Card(Suit.DIAMONDS, Value.FOUR),
@@ -85,13 +67,7 @@ class Tests(unittest.TestCase):
             Card(Suit.SPADES, Value.ACE)
         ]
 
-        deck = Deck().build()
-        for index, card in enumerate(deck.cards):
-            self.assertEqual(card.suit.value, cards[index].suit.value)
-            self.assertEqual(card.value.value, cards[index].value.value)
-
-    def test_d_build_with_cards(self):
-        cards = [
+        self.subset_cards = [
             Card(Suit.DIAMONDS, Value.TWO),
             Card(Suit.DIAMONDS, Value.THREE),
             Card(Suit.DIAMONDS, Value.FOUR),
@@ -106,15 +82,70 @@ class Tests(unittest.TestCase):
             Card(Suit.DIAMONDS, Value.KING),
             Card(Suit.DIAMONDS, Value.ACE)
         ]
-        
-        deck = Deck(None, **{'cards': cards})
 
+        self.empty_deck = Deck()
+        self.full_deck = Deck(None, **{'cards': self.full_cards})
+        self.subset_deck = Deck(None, **{'cards': self.subset_cards})
+
+        self.player_empty = Player('Player ', self.empty_deck)
+        self.player1 = Player('Player 1', self.subset_deck)
+
+    # Player Tests
+    def test_p_deck(self):
+        top_card = self.player1.deck.cards[self.player1.deck.size()-1]
+        drawn_card = self.player1.draw_card()
+        spoils = self.player1.spoils
+
+        self.assertEqual(drawn_card, top_card)
+        self.assertTrue(type(drawn_card) == Card)
+
+        self.assertEqual(spoils.size(), 0)
+        self.assertEqual(spoils.cards, [])
+
+    def test_p_empty_deck(self):
+        drawn_card = self.player_empty.draw_card()
+        spoils = self.player_empty.spoils
+
+        self.assertEqual(drawn_card, -1)
+        self.assertTrue(type(drawn_card) == int)
+
+        self.assertEqual(spoils.size(), 0)
+        self.assertEqual(spoils.cards, [])
+
+    # Deck Tests
+    def test_d_shuffle(self):
+        pre_shuffle = []
+        count = 0
+
+        deck = Deck().build()
+
+        for c in deck.cards:
+            pre_shuffle.append(c)
+
+        deck.shuffle()
+
+        for i, c in enumerate(deck.cards):
+            if c.value == pre_shuffle[i].value and c.suit == pre_shuffle[i].suit:
+                count += 1
+
+        self.assertLess(count, len(deck.cards))
+
+    def test_d_build(self):
+        deck = Deck().build()
         for index, card in enumerate(deck.cards):
-            self.assertEqual(card.suit.value, cards[index].suit.value)
-            self.assertEqual(card.value.value, cards[index].value.value)
+            self.assertEqual(card.suit.value, self.full_cards[index].suit.value)
+            self.assertEqual(card.value.value, self.full_cards[index].value.value)
+        self.assertEqual(deck.size(), len(self.full_cards))
+
+    def test_d_build_with_cards(self):
+        for index, card in enumerate(self.subset_deck.cards):
+            self.assertEqual(card.suit.value, self.subset_cards[index].suit.value)
+            self.assertEqual(card.value.value, self.subset_cards[index].value.value)
+        self.assertEqual(self.subset_deck.size(), len(self.subset_cards))
 
     def test_d_empty(self):
-        self.assertEqual(Deck().cards, [])
+        self.assertEqual(self.empty_deck.cards, [])
+        self.assertEqual(self.empty_deck.size(), 0)
 
 if __name__ == '__main__':
     unittest.main()
