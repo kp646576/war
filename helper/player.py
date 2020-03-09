@@ -17,6 +17,9 @@ class Player:
         self.spoils = Deck()
 
     def draw_card(self):
+        if self.deck.size() == 0:
+            self.deck.transfer(self.spoils)
+
         if len(self.deck.cards) > 0:
             return self.deck.cards.pop()
         else:

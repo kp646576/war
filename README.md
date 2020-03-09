@@ -19,4 +19,5 @@ Python 3 implementation of popular card game titled [War](https://en.wikipedia.o
 2. Aces are high (highest value in game)
 2. Standard 52 card deck without Jokers/Wilds
 5. If a player runs out of cards, their winning stack will be added back to their deck
-6. Game will automatically be played out until one player wins
+6. If a player draws their last card while milling during "War", that player automatically loses
+7. Game will automatically be played out until one player wins

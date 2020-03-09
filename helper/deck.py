@@ -5,7 +5,7 @@ from .card import Card
 
 class Deck:
     # Deck is used for both the starting deck and each player's deck
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         self.cards = kwargs.get('cards', [])
 
     def build(self):
@@ -23,3 +23,13 @@ class Deck:
         for i in range(len(self.cards)-1, 0, -1):
             j = randint(0, i)
             self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
+
+    """
+    @type other_deck: Deck
+    @param other_deck: Appends cards from other_deck to this deck and
+                       empties cards from other_deck
+    """
+    def transfer(self, other_deck):
+        self.cards += other_deck.cards
+        other_deck.cards = []
+            
