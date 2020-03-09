@@ -86,7 +86,10 @@ class Tests(unittest.TestCase):
             Card(Suit.DIAMONDS, Value.ACE)
         ]
 
-        self.empty_deck = Deck()
+        self.card = Card(Suit.SPADES, Value.ACE)
+
+        self.empty_deck = Deck(**{'cards': []})
+        self.one_card_deck = Deck(**{'cards': [self.card]})
         self.full_deck = Deck(**{'cards': self.full_cards})
         self.subset_deck = Deck(**{'cards': self.subset_cards})
 
@@ -111,6 +114,37 @@ class Tests(unittest.TestCase):
             self.assertEqual(player.deck.size(), self.full_deck.size() / NUM_PLAYERS)
 
     # Player Tests
+    def test_p_transfer_spoils(self):
+        player = Player("P1", self.one_card_deck)
+        card = Card(Suit.HEARTS, Value.ACE)
+        player.spoils.cards = [card]
+
+        self.assertNotEqual(player.deck.cards, [])
+        self.assertGreater(player.deck.size(), 0)
+        self.assertNotEqual(player.spoils.cards, [])
+        self.assertGreater(player.spoils.size(), 0)
+
+        draw_card = player.draw_card()
+        self.assertEqual(draw_card, self.card)
+        self.assertEqual(player.deck.cards, [])
+        self.assertEqual(player.deck.size(), 0)
+        self.assertNotEqual(player.spoils.cards, [])
+        self.assertGreater(player.spoils.size(), 0)
+        
+        draw_card = player.draw_card()
+        self.assertEqual(draw_card, card)
+        self.assertEqual(player.deck.cards, [])
+        self.assertEqual(player.deck.size(), 0)
+        self.assertEqual(player.spoils.cards, [])
+        self.assertEqual(player.spoils.size(), 0)
+
+        draw_card = player.draw_card()
+        self.assertEqual(player.deck.cards, [])
+        self.assertEqual(player.deck.size(), 0)
+        self.assertEqual(player.spoils.cards, [])
+        self.assertEqual(player.spoils.size(), 0)
+        self.assertEqual(draw_card, -1)
+
     def test_p_deck(self):
         top_card = self.player1.deck.cards[self.player1.deck.size()-1]
         drawn_card = self.player1.draw_card()
@@ -133,6 +167,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(spoils.cards, [])
 
     # Deck Tests
+    def test_d_transfer(self):
+        deck1 = Deck().build()
+        deck2 = Deck().build()
+        cards = self.full_deck.cards + self.full_deck.cards
+
+        deck1.transfer(deck2)
+        for index, card in enumerate(deck1.cards):
+            self.assertEqual(card.suit.value, cards[index].suit.value)
+            self.assertEqual(card.value.value, cards[index].value.value)
+        self.assertEqual(deck2.cards, [])
+
     def test_d_shuffle(self):
         pre_shuffle = []
         count = 0
