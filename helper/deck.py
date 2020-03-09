@@ -20,7 +20,7 @@ class Deck:
     # Fisher–Yates Shuffle Algorithm
     # https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
     def shuffle(self):
-        for i in range(len(self.cards)-1, 0, -1):
+        for i in range(self.size()-1, 0, -1):
             j = randint(0, i)
             self.cards[i], self.cards[j] = self.cards[j], self.cards[i]
 

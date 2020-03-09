@@ -19,8 +19,10 @@ class Player:
     def draw_card(self):
         if self.deck.size() == 0:
             self.deck.transfer(self.spoils)
+            # Shuffle deck after transfer to reduce likelihood of cyclic formations
+            self.deck.shuffle()
 
-        if len(self.deck.cards) > 0:
+        if self.deck.size() > 0:
             return self.deck.cards.pop()
         else:
             return -1
