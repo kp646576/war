@@ -1,13 +1,16 @@
 import os
 import sys
 import unittest
+from copy import deepcopy
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from helper.config import *
 from helper.suit import Suit
 from helper.value import Value
 from helper.card import Card
 from helper.deck import Deck
 from helper.player import Player
+from helper.board import Board
 
 
 class Tests(unittest.TestCase):
@@ -84,11 +87,28 @@ class Tests(unittest.TestCase):
         ]
 
         self.empty_deck = Deck()
-        self.full_deck = Deck(None, **{'cards': self.full_cards})
-        self.subset_deck = Deck(None, **{'cards': self.subset_cards})
+        self.full_deck = Deck(**{'cards': self.full_cards})
+        self.subset_deck = Deck(**{'cards': self.subset_cards})
 
         self.player_empty = Player('Player ', self.empty_deck)
         self.player1 = Player('Player 1', self.subset_deck)
+
+    # Board Test
+    def test_b_create_players(self):
+        board = Board(deepcopy(self.full_deck))
+        cards = self.full_deck.cards
+        offset = int(self.full_deck.size() / 2)
+        count = 0
+
+        for i, player in enumerate(board.players):
+            for j, card in enumerate(player.deck.cards):
+                self.assertEqual(type(card), Card)
+                if card.value == cards[j+i*offset].value and card.suit == cards[j+i*offset].suit:
+                    count += 1
+
+            # test shuffle & number of cards in each players deck
+            self.assertLess(count, player.deck.size())
+            self.assertEqual(player.deck.size(), self.full_deck.size() / NUM_PLAYERS)
 
     # Player Tests
     def test_p_deck(self):
