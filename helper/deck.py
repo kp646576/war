@@ -4,7 +4,10 @@ from .value import Value
 from .card import Card
 
 class Deck:
-    # Deck is used for both the starting deck and each player's deck
+    """
+    @type  cards: Array<Card>
+    @param cards: List of cards for either the starting deck or player's deck
+    """
     def __init__(self, **kwargs):
         self.cards = kwargs.get('cards', [])
 

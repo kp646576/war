@@ -7,6 +7,13 @@ from .player import Player
 
 
 class Board:
+    """
+    @type  deck: Deck
+    @param deck: Standard 52 card deck used in the game
+
+    @type  num_players: int
+    @param num_players: Number of players to create in the game
+    """
     def __init__(self, deck=Deck().build(), num_players=NUM_PLAYERS):
         self._game_deck = deck
         self._game_deck.shuffle()
@@ -74,13 +81,12 @@ class Board:
         print('round_cards: ', len(self._round_cards), 'round_spoils: ', len(self._round_spoils), 'total_cards: ', len(self._round_cards) + len(self._round_spoils) + player_card_count)
         return True
 
-    # sorted_cards = [(Player, Card), ...]
-    def _check_dups(self, sorted_cards):
-        highest = sorted_cards[0][1].value.value
-        dups = [sorted_cards[0]]
-        for i in range(1, len(self._players)):
-            if sorted_cards[i][1].value.value == highest:
-                dups.append(sorted_cards[i])
+    # round_cards = [(Player, Card), ...]
+    def _check_dups(self, highest, round_cards):
+        dups = []
+        for i in range(0, len(round_cards)):
+            if round_cards[i][1].value.value == highest:
+                dups.append(round_cards[i])
         return dups
 
     def play_round(self, is_war):
@@ -88,13 +94,13 @@ class Board:
         if not self._get_players_cards(is_war):
             return False
 
-        # Sort cards in play in reverse order (highest cards in the front)
+        # Get the highes card in the list
         # self._round_cards = [(Player, Card), ...]
-        sorted_cards = sorted(self._round_cards, key=lambda card: card[1].value.value, reverse=True)
+        highest = max(self._round_cards, key=lambda card: card[1].value.value)
 
         # Check all players for tie with highest card
         # dups = [(Player, Card), ...]
-        dups = self._check_dups(sorted_cards)
+        dups = self._check_dups(highest, self._round_cards)
 
         # Initiate "War" or determine round winner and start next round
         if len(dups) > 1: 
