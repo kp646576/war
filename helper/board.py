@@ -82,10 +82,10 @@ class Board:
         return True
 
     # round_cards = [(Player, Card), ...]
-    def _check_dups(self, highest, round_cards):
+    def _check_dups(self, highest_val, round_cards):
         dups = []
         for i in range(0, len(round_cards)):
-            if round_cards[i][1].value.value == highest:
+            if round_cards[i][1].value.value == highest_val:
                 dups.append(round_cards[i])
         return dups
 
@@ -96,11 +96,12 @@ class Board:
 
         # Get the highes card in the list
         # self._round_cards = [(Player, Card), ...]
-        highest = max(self._round_cards, key=lambda card: card[1].value.value)
+        # highest_card = Card
+        highest_card = max(self._round_cards, key=lambda card: card[1].value.value)
 
         # Check all players for tie with highest card
         # dups = [(Player, Card), ...]
-        dups = self._check_dups(highest, self._round_cards)
+        dups = self._check_dups(highest_card[1].value.value, self._round_cards)
 
         # Initiate "War" or determine round winner and start next round
         if len(dups) > 1: 
@@ -125,3 +126,4 @@ class Board:
             print('ROUND: ', count)
             play = self.play_round(False)
             count += 1
+        return count
