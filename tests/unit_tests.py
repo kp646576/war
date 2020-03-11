@@ -112,8 +112,8 @@ class Tests(unittest.TestCase):
         self.assertEqual(card_a.suit.value, card_b.suit.value)
         self.assertEqual(card_a.value.value, card_b.value.value)
 
-    # Board Test
-    def test_play(self):
+    # Board Tests
+    def test_b_play(self):
         num_rounds = self.board.play()
         self.assertLessEqual(num_rounds, MAX_ROUND)
 
@@ -121,11 +121,13 @@ class Tests(unittest.TestCase):
         num_rounds = self.board.play()
         self.assertLessEqual(num_rounds, MAX_ROUND)
 
+        # Not extensively tested for more than 2 players
         self.board = Board(deepcopy(self.full_deck), 3, max_round=5)
         num_rounds = self.board.play()
         self.assertLessEqual(num_rounds, MAX_ROUND)
 
-    def test_play_round(self):
+    # Play Round Tests
+    def test_b_play_round(self):
         # Setup
         p1 = self.board._players[0]
         p2 = self.board._players[1]
@@ -159,6 +161,26 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(self.board.play_round(True), False)
 
+        # Player enters war from draw
+        same_card = Card(Suit.HEARTS, Value.TEN)
+        cards = deepcopy(self.full_cards)
+        cards.remove(self.high_card)
+        cards.remove(self.low_card)
+        cards.remove(self.card)
+        cards.remove(same_card)
+        p1_cards = cards
+
+        p1_cards.append(same_card)
+        p1.deck.cards = p1_cards
+        p1.spoils = deepcopy(self.empty_deck)
+
+        p2.deck.cards = [self.high_card, self.low_card, self.card]
+        p2.spoils = deepcopy(self.empty_deck)
+
+        self.board._round_cards = []
+        self.board._round_spoils = []
+
+        self.assertEqual(self.board.play_round(False), False)
 
         # Player wins round without winning game
         p1 = self.board._players[0]
@@ -178,8 +200,7 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(self.board.play_round(False), True)
 
-
-    def test_check_dups(self):
+    def test_b_check_dups(self):
         highest = max(self.round_cards, key=lambda card: card[1].value.value)
         dups = self.board._check_dups(highest, self.round_cards)
 
@@ -192,8 +213,22 @@ class Tests(unittest.TestCase):
         dups3 = self.board._check_dups(0, [])
         self.assertEqual(dups3, [])
     
-    # def test_get_players_cards(self):
-        # no war
+    def test_b_get_players_cards(self):
+        # No War, no mill out case
+        p1 = self.board._players[0]
+        p2 = self.board._players[1]
+
+        p1.deck.cards = [self.high_card]
+        p1.spoils = deepcopy(self.empty_deck)
+
+        p2.deck.cards = [self.low_card]
+        p2.spoils = deepcopy(self.empty_deck)
+
+        self.board._round_cards = []
+        self.board._round_spoils = []
+
+        self.assertEqual(self.board._get_players_cards(False), True)
+
     def test_b_continue_game(self):
         self.assertEqual(self.board._continue_game(), True)
 

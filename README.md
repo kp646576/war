@@ -57,7 +57,7 @@ In tests folder
 * Setup coninuous integration tool like Travis CI/ Jenkins to streamline testing process
 * Utilize more testing resources such as mock and hypothesis in unittest for scalable testing
 
-## Other
+### Other
 * Research more into Python packages that can be incorporated into the project to simplify code
 * Resarch more into venv to consolidate all packages/dependencies within the project
 
