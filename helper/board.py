@@ -12,9 +12,13 @@ class Board:
     @param deck: Standard 52 card deck used in the game
 
     @type  num_players: int
-    @param num_players: Number of players to create in the game
+    @param num_players: Number of players to create in the game, set to NUM_PLAYERS by default
+
+    @type  max_round: int
+    @param max_round: Max number of games to play, set to MAX_ROUND by default
     """
-    def __init__(self, deck=Deck().build(), num_players=NUM_PLAYERS):
+    def __init__(self, deck=Deck().build(), num_players=NUM_PLAYERS, max_round=MAX_ROUND):
+        self._max_round = max_round
         self._game_deck = deck
         self._game_deck.shuffle()
         self._players = []
@@ -39,6 +43,7 @@ class Board:
     def _continue_game(self):
         cards_in_play = len(self._round_cards) + len(self._round_spoils)
         for p in self._players:
+            print('count: ', p.spoils.size() + len(p.deck.cards) + cards_in_play )
             if p.spoils.size() + len(p.deck.cards) + cards_in_play == NUM_CARDS_IN_DECK * NUM_DECKS:
                 print('Player: ' + p.name + ' is the winner!')
                 return False
@@ -68,6 +73,7 @@ class Board:
         for p in self._players:
             draw_card = p.draw_card()
 
+            # Check against "War" mill out
             if draw_card == -1:
                 return self._continue_game()
             else:
@@ -120,7 +126,7 @@ class Board:
         play = True
         count = 1
         while play:
-            if count > MAX_ROUND:
+            if count > self._max_round:
                 print('---------- MAX ROUND REACHED, GAME IS A TIE!!! ----------')
                 break
             print('ROUND: ', count)
