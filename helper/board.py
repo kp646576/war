@@ -43,9 +43,9 @@ class Board:
     def _continue_game(self):
         cards_in_play = len(self._round_cards) + len(self._round_spoils)
         for p in self._players:
-            print('count: ', p.spoils.size() + len(p.deck.cards) + cards_in_play )
             if p.spoils.size() + len(p.deck.cards) + cards_in_play == NUM_CARDS_IN_DECK * NUM_DECKS:
                 print('Player: ' + p.name + ' is the winner!')
+                print('-------------------------------')
                 return False
         return True
 
@@ -120,6 +120,7 @@ class Board:
             self._round_cards = []
             self._round_spoils = []
             print('ROUND WINNER is PLAYER: ', winner[0].name)
+            print('-------------------------------')
             return self._continue_game()
 
     def play(self):

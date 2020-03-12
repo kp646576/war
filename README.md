@@ -18,26 +18,38 @@ In tests folder
 
 ## Rules
 
-* Each player is given half of the cards in the starting deck
+* Each player is given an equal amount of the cards in the starting deck
 * Each player begins by drawing and revealing the top card in their deck
 * The player with the highest card wins the round and takes both cards
 * In the case of a tie (same value card, suits are ignored) "War" is initiated
-* In "War" each player draws the top 3 cards of their card face down and reveal the 4th card
-* The player with the highest 4th card is the winner and takes all of the cards
+* In "War" each player draws the top ```MILL_COUNT``` (set to 3 by default) cards of their card face down and reveal the ```MILL_COUNT + 1``` card
+* The player with the highest ```MILL_COUNT + 1``` (4th by default) card is the winner and takes all of the cards
 * In the case of another tie "War" is reinitiated
-* This process continues until one player has all of the cards in the starting deck
+* This process continues until one player has all of the cards in the starting deck or all other players are out of cards to play
 
 ## Game Details (Assumptions)
 
 1. 2 Player Game
 2. Aces are high (highest value in game)
-2. Played with 1 standard deck comprised of 52 cards without Jokers/Wilds
-5. If a player runs out of cards, their winning stack will be added back to their deck and reshuffled (this is to reduce the likelihood of cyclic formations and infinite/seemingly games)
-6. If a player draws their last card while removing cards during "War", that player automatically loses
-7. Game will automatically be played out until:
+3. Played with 1 standard deck comprised of 52 cards without Jokers/Wilds
+4. If a player runs out of cards, their winning stack will be added back to their deck and reshuffled
+5. If a player draws their last card while removing cards during "War", that player automatically loses
+6. Game will automatically be played out until:
 
 	1. A player wins
 	2. The maximum number of game rounds has been reached (by default this value is set to 1,000)
+
+## Rationale
+
+(1) Started out building project for an arbitrary number of players, but upon more research into the game found that it is primarily played with 2 people so limited the number of players to 2
+
+(2) & (3) Based off gameplay rules in Wikipedia article
+
+(4) Added the reshuffle mechanic when adding cards back into the players deck from their winning pile to reduce the likelihood of cyclic formations and infinite/seemingly infinte games. To further reduce gameplay time a ```MAX_ROUND``` constant is used to automtaically end the game as a tie once ```MAX_ROUND``` has been reached.
+
+(5) The reasoning behind a player losing if they are unable to draw ```MILL_COUNT + 1``` cards for "War" is similar to being unable to pay for a movie ticket admission. If you cannot pay for the movie ticket, then you cannot see the movie. Likewise, if you cannot meet the requirements of "War", you cannot go to "War".
+
+(6) Set default to 1,000 for auto playing out games for analysis. Would set the value lower for human gameplay.
 
 ## Improvements (Given More Time)
 
@@ -47,6 +59,7 @@ In tests folder
 	* Immediately adding cards back into deck upon winning
 	* Different shuffling algorithms
 	* Allowing player to use the last card they drew during war instead of automatically losing if they do not have enough cards
+* Either count "War" rounds in the round count or set a ```MAX_WAR``` constant to prevent cyclic formations during "War" before ```MAX_ROUND``` is reached leading to infinite gameplay
 
 ### User Experience
 * Implment GUI using a framework like PyQt to make the game more interactive
